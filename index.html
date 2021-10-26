@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>To Do List</title>
+   </head>
+<style>
+body{
+background-color:#eee;
+font-size:20px;
+font-family:arial;
+
+}
+
+*{
+font-color:white;
+box-sizing:border-box;
+
+}
+
+.container{
+width:70%;
+margin:20px auto;
+text-align:center;
+
+
+}
+
+.form{
+display:flex;
+justify-content:space-around;
+padding:20px;
+background-color:#ccc;
+
+border-radius:10px;
+}
+.input{
+width:60%;
+padding:20px;
+outline:none;
+border:none;
+border-radius:10px;
+font-size:20px;
+background-color:#594214;
+color:white;
+}
+
+.add{
+width:25%;
+border-radius:10px;
+outline:none;
+border:none;
+background-color:#FCD603;
+color:#594214;
+font-size:20px;
+font-weight:bold;
+transition:0.5s;
+cursor:pointer;
+
+}
+
+.add:hover{
+background-color:#F0B135;
+
+}
+
+.tasks{
+padding:20px;
+
+
+}
+
+.tasks .task:not(last-child){
+margin-bottom:15px;a
+overflow:auto;
+  text-overflow:ellipsis ;
+
+}
+
+.tasks .task{
+background-color:#FAD90C;
+padding:20px;
+border-radius:10px;
+display:flex;
+justify-Content:space-between;
+overflow:auto;
+
+}
+.tasks .task.done{
+opacity:0.5;
+}
+
+
+.tasks .task span{
+font-weight:bold;
+font-size:15px;
+background-color:#594214;
+color:white;
+padding: 2px 6px;
+border-radius:4px;
+cursor:pointer;
+transition:0.25s;
+margin-left:5px;
+align-self:center;
+
+}
+
+.tasks .task span:hover{
+background-color:red;
+}
+a{
+display:block;
+background-color:yellow;
+font-size:25px;
+color:#594214;
+text-decoration:none;
+border-radius:5px;
+width:fit-content;
+height:fit-content;
+border:solid 2px #594214;
+font-weight:bold;
+padding:5px;
+margin:5px;
+transition:0.25s;
+}
+
+a:hover{
+background-color:orange;
+}
+
+</style>
+
+<body>
+<a href="card.html" target="_blank">Huda</a>
+<div class="container">
+
+  <div class="form">
+     <input type="text" class="input"/>
+     <input type="submit" class="add" value="Add Task">
+  </div>
+
+<div class="tasks">
+
+
+
+
+</div>
+
+
+</div>
+
+<script>
+
+let input = document.querySelector(".input")
+let submit = document.querySelector(".add")
+let tasksDiv = document.querySelector(".tasks")
+
+
+let arrayOfTasks = []
+
+if(localStorage.getItem("tasks")){
+arrayOfTasks = JSON.parse(localStorage.getItem("tasks"))
+}
+
+getDataFromLocalStorage()
+
+submit.onclick=function() {
+
+if(input.value!==""){
+addTaskToArray(input.value)
+input.value=""
+}
+
+
+
+ };
+
+tasksDiv.addEventListener("click",e=>{
+if(e.target.classList.contains("del")){
+deleteTaskWith(e.target.parentElement.getAttribute("data-id"))
+e.target.parentElement.remove()
+}
+
+if(e.target.classList.contains("task")){
+toggleStatusTaskWith(e.target.getAttribute("data-id"))
+
+e.target.classList.toggle("done")
+
+}
+
+})
+
+
+
+//first function
+ 
+function addTaskToArray(taskText) {
+
+const task = {
+id: Date.now(),
+title: taskText,
+completed: false }
+ 
+arrayOfTasks.push(task)
+
+addElementToPageFrom(arrayOfTasks)
+addDataToLocalStorageFrom(arrayOfTasks)
+
+
+ };
+
+
+
+
+//second function
+
+function addElementToPageFrom(arrayOfTasks) {
+tasksDiv.innerHTML = ""
+arrayOfTasks.forEach(task=>{
+let div = document.createElement("div")
+div.className="task"
+if(task.completed) {
+div.className="task done"
+ }
+
+div.setAttribute("data-id",task.id)
+div.appendChild(document.createTextNode(task.title))
+
+let span =document.createElement("span")
+span.className = "del"
+span.appendChild(document.createTextNode("Delete"))
+div.appendChild(span)
+tasksDiv.appendChild(div)
+})
+
+};
+
+
+
+//third function
+
+function addDataToLocalStorageFrom(arrayOfTasks){
+
+window.localStorage.setItem("tasks",JSON.stringify(arrayOfTasks))
+
+}
+
+//forth function
+
+function getDataFromLocalStorage(){
+let data = window.localStorage.getItem("tasks")
+if(data){
+let tasks = JSON.parse(data)
+
+addElementToPageFrom(tasks)
+}
+
+
+}
+
+
+function deleteTaskWith(taskId){
+
+arrayOfTasks=arrayOfTasks.filter(task=> task.id != taskId)
+
+addDataToLocalStorageFrom(arrayOfTasks)
+}
+
+
+
+function toggleStatusTaskWith(taskId){
+for(let i=0; i <arrayOfTasks.length;i++){
+if(arrayOfTasks[i].id== taskId){
+arrayOfTasks[i].completed == false ?arrayOfTasks[i].completed = true:arrayOfTasks[i].completed=false
+}
+}
+
+}
+
+</script>
+
+</body>
+</html>
